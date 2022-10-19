@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import EntryModule as em
 
@@ -12,19 +14,18 @@ class Peptides:
         for i in range(15):
             self.__pept_tables.append(list())
 
-        self.__sequence.create_replaced_dict(self.__abl_data.replaced_positions, self.__abl_data.new_letters)
+        self.__sequence.create_replaced_dict(self.__abl_data.replaced_positions, self.__abl_data.new_letters, self.__abl_data.get_mutations())
 
     def create_peptide_tables(self):
         if not self.__is_tables_created:
             drug = self.__abl_data.drug_name
             transcrypt = self.__sequence.transcrypt_name
 
-            for pos in self.__abl_data.replaced_positions:
+            for mutation in self.__abl_data.get_mutations():
                 left_part = ""
                 right_part = ""
-                pos = int(pos)
-                mutation = self.__abl_data.get_mutation_by_position(str(pos))
-                sequence_one_str = self.__sequence.get_sequence_by_position(str(pos))
+                pos = int(self.__abl_data.get_pos_by_mutation(mutation))
+                sequence_one_str = self.__sequence.get_sequence_by_mutation(mutation)
                 peptide = sequence_one_str[pos - 1]
                 seq_len = len(sequence_one_str)
 
@@ -51,8 +52,12 @@ class Peptides:
                 df.index.name = 'NUMBERS'
                 df_list.append(df)
 
+            default_dir = 'out'
+            if not os.path.exists(default_dir):
+                os.mkdir(default_dir)
+
             for i in range(len(df_list)):
-                name = "pept_" + str(i + 1) + ".csv"
+                name = default_dir + "/pept_" + str(i + 1) + ".csv"
                 df_list[i].to_csv(name)
                 print("---> Create new file: " + str(name))
 
