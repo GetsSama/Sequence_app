@@ -99,7 +99,7 @@ class Peptides:
         drug = abl_inst.drug_name
         transcrypt = sequence_inst.transcrypt_name
 
-        for mutation in abl_inst.get_mutations():
+        for mutation in abl_inst.mutations:
             left_part = ""
             right_part = ""
             pos = int(abl_inst.get_pos_by_mutation(mutation))
@@ -120,7 +120,7 @@ class Peptides:
 
             self.__is_tables_created = True
 
-    def peptides_to_csv(self):
+    def peptides_to_csv(self, files_name):
 
         if self.__is_tables_created:
             df_list = list()
@@ -135,7 +135,7 @@ class Peptides:
                 os.mkdir(default_dir)
 
             for i in range(len(df_list)):
-                name = default_dir + "/pept_" + str(i + 1) + ".csv"
+                name = default_dir + "/" + files_name + str(i + 1) + ".csv"
                 df_list[i].to_csv(name)
                 print("---> Create new file: " + str(name))
 
